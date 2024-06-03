@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todoapp/utils/dialog_box.dart';
 import 'package:todoapp/utils/todo_tile.dart';
 
 class HomePage extends StatefulWidget {
@@ -9,6 +10,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+  final _controller = TextEditingController();
+
   List toDoList = [
     ['Task 1', false],
     ['Task 2', false]
@@ -21,10 +25,14 @@ class _HomePageState extends State<HomePage> {
   }
 
   void createNewTask() {
-   showDialog(context: context, builder: (context)
+   showDialog(
+    context: context, 
+    builder: (context)
    {
-    return AlertDialog();
-   });
+    return DialogBox(
+      controller: _controller,
+    );
+    });
   }
 
   @override
