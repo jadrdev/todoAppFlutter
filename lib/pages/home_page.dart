@@ -24,6 +24,15 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  // save the new task
+  void savetheNewtask() {
+    setState(() {
+      toDoList.add([_controller.text, false]);
+      _controller.clear();
+    });
+    Navigator.of(context).pop();
+  }
+
   void createNewTask() {
    showDialog(
     context: context, 
@@ -31,6 +40,8 @@ class _HomePageState extends State<HomePage> {
    {
     return DialogBox(
       controller: _controller,
+      onSave: savetheNewtask,
+      onCancel: () => Navigator.of(context).pop()
     );
     });
   }
