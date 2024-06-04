@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:todoapp/data/database.dart';
 import 'package:todoapp/utils/dialog_box.dart';
 import 'package:todoapp/utils/todo_tile.dart';
 
@@ -11,16 +13,27 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
+  //referencia the hive box
+  final _myBox = Hive.box('mybox');
+  TodoDataBase db = TodoDataBase();
+
+  @override
+  void initState() {
+   if(_myBox.get("TODOLIST") == null){
+     db.createInitialData();
+    } else {
+      db.loadData();
+    }
+    super.initState();
+  }
+
   final _controller = TextEditingController();
 
-  List toDoList = [
-    ['Task 1', false],
-    ['Task 2', false]
-  ];
+  
 
   void checkBoxChanged(bool? value, int index) {
     setState(() {
-      toDoList[index][1] = !toDoList[index][1];
+      db.toDoList[index][1] = !db.toDoList[index][1];
     });
   }
 
@@ -28,7 +41,7 @@ class _HomePageState extends State<HomePage> {
   // save the new task
   void savetheNewtask() {
     setState(() {
-      toDoList.add([_controller.text, false]);
+      db.toDoList.add([_controller.text, false]);
       _controller.clear();
     });
     Navigator.of(context).pop();
@@ -36,7 +49,7 @@ class _HomePageState extends State<HomePage> {
 
   void deleteTask(int index) {
     setState(() {
-      toDoList.removeAt(index);
+      db.toDoList.removeAt(index);
     });
   }
 
@@ -69,10 +82,10 @@ class _HomePageState extends State<HomePage> {
           child: const Icon(Icons.add),
         ),
         body: ListView.builder(
-            itemCount: toDoList.length,
+            itemCount: db.toDoList.length,
             itemBuilder: (context, index) => TodoTile(
-                  taskName: toDoList[index][0],
-                  taskCompleted: toDoList[index][1],
+                  taskName: db.toDoList[index][0],
+                  taskCompleted: db.toDoList[index][1],
                   onChanged: (value) => checkBoxChanged(value, index),
                   deleteFunction: (context) => deleteTask(index),
                 )));
